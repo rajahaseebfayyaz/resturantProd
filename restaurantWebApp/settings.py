@@ -10,8 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+
 import os
+if os.path.isfile("env.py"):
+    import env
+
 from pathlib import Path
+
+
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,14 +32,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
     Reading the secret key from environmet variable, instead of hardcoded value.
 """
 
-from decouple import config
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =  config("SECRET_KEY") #os.environ['SECRET_KEY'] #'o+un^+_hcls)sl2dv$9ul8sfg!c0k1a&e@)7(3uknhgzbz_7@w'
+SECRET_KEY =   os.environ.get("SECRET_KEY") #os.environ['SECRET_KEY'] #'o+un^+_hcls)sl2dv$9ul8sfg!c0k1a&e@)7(3uknhgzbz_7@w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["resturantly.herokuapp.com", "localhost"]
 
 
 # Application definition
@@ -43,9 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'cloudinary',
+    'django.contrib.staticfiles',
     'cloudinary_storage',
 
     
@@ -83,10 +90,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'restaurantWebApp.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR,'templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates',],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,15 +119,21 @@ WSGI_APPLICATION = 'restaurantWebApp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+# DATABASES = {
+# 'default': {
+#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#     'NAME': 'resturantly',
+#     'USER': 'postgres',
+#     'PASSWORD': 'root',
+#     'HOST': 'localhost',
+#     'PORT': '5432',
+# }
+# }
+# print("dsdsdsds/n",os.environ("DATABSE_URL"))
+# exit()
 DATABASES = {
-'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'resturantly',
-    'USER': 'postgres',
-    'PASSWORD': 'root',
-    'HOST': 'localhost',
-    'PORT': '5432',
-}
+'default':
+dj_database_url.parse(os.environ.get("DATABSE_URL"))
 }
 
 """
@@ -178,6 +193,14 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE ='cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 """
     @rajaSaheebFayyaz.
