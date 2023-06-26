@@ -198,7 +198,16 @@ STATICFILES_DIRS = [
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get("YOUR_CLOUD_NAME"),
     'API_KEY': os.environ.get("YOUR_API_KEY"),
-    'API_SECRET': os.environ.get("YOUR_API_SECRET")
+    'API_SECRET': os.environ.get("YOUR_API_SECRET"),
+    'MEDIA_TAG': 'media',
+    'STATIC_TAG': 'static',
+    'STATICFILES_MANIFEST_ROOT': os.path.join(BASE_DIR, 'manifest'),
+    'STATIC_IMAGES_EXTENSIONS': ['jpg', 'jpe', 'jpeg', 'jpc', 'jp2', 'j2k', 'wdp', 'jxr',
+                                 'hdp', 'png', 'gif', 'webp', 'bmp', 'tif', 'tiff', 'ico'],
+    'STATIC_VIDEOS_EXTENSIONS': ['mp4', 'webm', 'flv', 'mov', 'ogv' ,'3gp' ,'3g2' ,'wmv' ,
+                                 'mpeg' ,'flv' ,'mkv' ,'avi'],
+
+
 }
 
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
