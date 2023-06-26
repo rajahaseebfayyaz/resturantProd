@@ -195,6 +195,12 @@ STATICFILES_DIRS = [
 ]
 
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get("YOUR_CLOUD_NAME"),
+    'API_KEY': os.environ.get("YOUR_API_KEY"),
+    'API_SECRET': os.environ.get("YOUR_API_SECRET")
+}
+
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
