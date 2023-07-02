@@ -9,7 +9,7 @@ def reserve_table(request):
 
     if request.method == 'POST' :
         reserve_form = ReserveTableForm(request.POST)
-
+        
         if reserve_form.is_valid():
             reserve_form.save()
         messages.success(request, "Your Reservation is Successfully Completed.")
