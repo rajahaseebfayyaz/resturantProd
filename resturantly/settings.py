@@ -22,7 +22,10 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+EXCEUTION_FLAG = os.environ.get("EXCEUTION_FLAG")
 
+
+# Reading the flag , to decide whether to execute the application in dev env orin prod.
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -90,12 +93,29 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'resturantly.urls'
 
-TEMPLATES_DIR = os.path.join(BASE_DIR,'templates')
+if EXCEUTION_FLAG == "PROD":
+    TEMPLATES_DIR = os.path.join(BASE_DIR,'templates')
 
-TEMPLATES = [
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [TEMPLATES_DIR],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
+        },
+    ]
+else:
+    TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': ['templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,6 +127,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'resturantly.wsgi.application'
 
@@ -131,10 +152,25 @@ WSGI_APPLICATION = 'resturantly.wsgi.application'
 # }
 # print("dsdsdsds/n",os.environ("DATABSE_URL"))
 # exit()
-DATABASES = {
-'default':
-dj_database_url.parse(os.environ.get("DATABSE_URL"))
-}
+
+if EXCEUTION_FLAG == 'PROD':
+    DATABASES = {
+    'default':
+    dj_database_url.parse(os.environ.get("DATABSE_URL"))
+    }
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get("DATABSE_URL_LOCAL"),
+        'NAME': os.environ.get("DATABSE_NAME"),
+        'USER': os.environ.get("DATABSE_USER"),
+        'PASSWORD': os.environ.get("DATABSE_PASSWORD"),
+        'HOST': os.environ.get("DATABSE_HOST"),
+        'PORT': os.environ.get("DATABSE_PORT"),
+    }
+    }
+
+
 
 """
     
@@ -186,44 +222,64 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
 
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get("YOUR_CLOUD_NAME"),
-    'API_KEY': os.environ.get("YOUR_API_KEY"),
-    'API_SECRET': os.environ.get("YOUR_API_SECRET"),
-    'MEDIA_TAG': 'media',
-    'STATIC_TAG': 'static',
-    'STATICFILES_MANIFEST_ROOT': os.path.join(BASE_DIR, 'manifest'),
-    'STATIC_IMAGES_EXTENSIONS': ['jpg', 'jpe', 'jpeg', 'jpc', 'jp2', 'j2k', 'wdp', 'jxr',
-                                 'hdp', 'png', 'gif', 'webp', 'bmp', 'tif', 'tiff', 'ico'],
-    'STATIC_VIDEOS_EXTENSIONS': ['mp4', 'webm', 'flv', 'mov', 'ogv' ,'3gp' ,'3g2' ,'wmv' ,
-                                 'mpeg' ,'flv' ,'mkv' ,'avi'],
+if EXCEUTION_FLAG == "PROD":
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+    STATIC_URL = '/static/'
+    # STATICFILES_DIRS = [
+    #     os.path.join(BASE_DIR, 'static'),
+    # ]
 
 
-}
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ.get("YOUR_CLOUD_NAME"),
+        'API_KEY': os.environ.get("YOUR_API_KEY"),
+        'API_SECRET': os.environ.get("YOUR_API_SECRET"),
+        'MEDIA_TAG': 'media',
+        'STATIC_TAG': 'static',
+        'STATICFILES_MANIFEST_ROOT': os.path.join(BASE_DIR, 'manifest'),
+        'STATIC_IMAGES_EXTENSIONS': ['jpg', 'jpe', 'jpeg', 'jpc', 'jp2', 'j2k', 'wdp', 'jxr',
+                                    'hdp', 'png', 'gif', 'webp', 'bmp', 'tif', 'tiff', 'ico'],
+        'STATIC_VIDEOS_EXTENSIONS': ['mp4', 'webm', 'flv', 'mov', 'ogv' ,'3gp' ,'3g2' ,'wmv' ,
+                                    'mpeg' ,'flv' ,'mkv' ,'avi'],
+    }
 
-STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
-#STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE ='cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
-"""
-    
-    Register the media folder to locate media files globally used in project.
-"""
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+    STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
+    #STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    MEDIA_URL = '/media/'
+    DEFAULT_FILE_STORAGE ='cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+    """
+        
+        Register the media folder to locate media files globally used in project.
+    """
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+else:
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+    ]
+
+    """
+        
+        Register the media folder to locate media files globally used in project.
+    """
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 
 
 
