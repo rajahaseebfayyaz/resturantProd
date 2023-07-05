@@ -51,12 +51,12 @@ def reserve_table(request):
 
             try:
                 
-                is_time_validate = datetime.datetime.strptime(your_time, timeformat)
+                is_time_validate = datetime.strptime(your_time, timeformat)
             except:
                 is_time_validate = False
 
             if is_time_validate is False:
-                messages.error(request, "Your entered time format not matched , please follow HH:MM")
+                messages.error(request, "Your entered time format not matched , please follow H:MM")
 
 
             your_phone = reserve_form['phone'].value()
@@ -72,13 +72,15 @@ def reserve_table(request):
 
             context = {'form' : reserve_form}
             return render(request , 'reservation.html' , context)
-        except:        
+        except Exception as exc:
+            print(exc,"\n*******\n")
+
 
             if reserve_form.is_valid():
                 reserve_form.save()
             messages.success(request, "Your Reservation is Successfully Completed.")
             context = {'form' : reserve_form}
-
+            
             return render(request , 'reservation.html' , context)
     else:
         context = {'form' : reserve_form}
