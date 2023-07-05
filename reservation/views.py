@@ -65,10 +65,10 @@ def reserve_table(request):
             if(len(your_phone)) < 10 or len(your_phone) > 10:
                 print(your_phone)
                 messages.error(request, "Your phone number field entered is not correct, please check and try again.")
-            
-            if reserve_form.is_valid():
-                reserve_form.save()
-                messages.success(request, "Your Reservation is Successfully Completed.")
+            else:
+                if reserve_form.is_valid():
+                    reserve_form.save()
+                    messages.success(request, "Your Reservation is Successfully Completed.")
 
             context = {'form' : reserve_form}
             return render(request , 'reservation.html' , context)
